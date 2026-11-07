@@ -1,9 +1,65 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# Agent guide — ultim-portal
 
-## This is NOT the Next.js you know
+Partner/admin portal for ULTIM. Companion repos: `../ultim-server` (Payload CMS backend),
+`../ULTIM-USER` (member mobile app), `../facility-pass-pro` (gate QR scanner web app).
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## Commands
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+```bash
+npm run dev        # local dev on :3000
+npm run build      # static export to out/ (must pass before finishing any task)
+npm run preview    # serve out/ on :3000
+npx tsc --noEmit   # typecheck
+```
 
-<!-- END:nextjs-agent-rules -->
+## Conventions
+
+- **Client-only / static SPA.** Every page is a client component. `next.config.ts` uses
+  `output: "export"`; there is no server runtime, middleware, route handler, or server action.
+  Do not add `src/app/api/*`, `src/proxy.ts`, `"use server"`, or `next/headers` usage.
+- **Dark-only theme.** Never introduce light-mode styles. Use the CSS variables in
+  `src/app/globals.css` (`bg-background`, `text-muted-foreground`, `bg-primary`, `text-secondary`,
+  `var(--success)`, `var(--gold)`). Brand: ember `#FF5A1F`, gold `#E9B54C`.
+- **All backend access goes through `src/lib/api.ts`** (`payload.list/get/create/update/remove`).
+  Components may call these helpers directly; the browser sends the JWT from `localStorage`.
+  Set `NEXT_PUBLIC_API_URL`; the Payload server must allow the portal origin via `PORTAL_ORIGINS`.
+- **Tenant scoping is mandatory.** Partner/consultant queries must include
+  `tenantScope(user)` from `src/lib/scope.ts`. Admins have no tenant scope.
+- **Reads:** use `usePortalQuery` (`src/hooks/use-portal-query.ts`) for page data. It handles
+  loading/error state and refetches when a successful mutation broadcasts `portal:refresh`.
+- **Mutations:** use `portalCall` / `portalPost` from `src/lib/portal-client.ts`. Handlers live in
+  `src/lib/portal/actions/*` and call Payload directly with the stored token. Return
+  `{ ok, error?, message? }`; successful mutations dispatch `portal:refresh` automatically.
+  Multipart uploads go through `portalCall.uploadFacilityImage` → Payload `/api/media`.
+- **Auth:** `src/components/portal/auth-provider.tsx` stores the JWT + profile in `localStorage`,
+  verifies `/api/users/me` on boot, and client-guards `/app/*`. Admin pages use
+  `useRequireAdmin` (`src/hooks/use-require-admin.ts`). Do not use cookies or a proxy.
+- **Static routes:** dynamic detail pages use query params, e.g.
+  `/app/members/view?id=12`, `/app/plans/edit?id=3`, `/app/tenants/view?id=1`,
+  `/app/app-releases/edit?id=4`. Never add `[id]` route folders.
+- **Suspense:** any component using `useSearchParams` must sit under a Suspense boundary. The
+  `/app` layout wraps its children; the login page wraps its content.
+- **Client components:** pages use `"use client"`; shared plain constants belong in `src/lib/`.
+- The portal is **staff-only** (`admin | partner | consultant`). Member accounts are rejected at
+  login; members use the mobile app.
+
+## Key files
+
+| Area | File |
+|---|---|
+| Auth context + localStorage session | `src/components/portal/auth-provider.tsx`, `src/lib/session.ts` |
+| Payload client + domain types | `src/lib/api.ts` |
+| Client query hook / refresh bus | `src/hooks/use-portal-query.ts`, `src/lib/portal-refresh.ts` |
+| Mutations + action modules | `src/lib/portal-client.ts`, `src/lib/portal/actions/*` |
+| Where-builder / query params | `src/lib/query.ts`, `src/lib/where-utils.ts` |
+| Tenant scope + IST day helpers | `src/lib/scope.ts` |
+| Dashboard aggregates | `src/lib/dashboard.ts` |
+| Nav config (role-gated) | `src/lib/nav.ts` |
+| Shared UI | `src/components/portal/*`, `src/components/data-table.tsx` |
+
+## Backend notes (ultim-server)
+
+- Roles: `admin`, `partner`, `consultant`, `member`; partners are bound to one tenant.
+- `Membership` money fields (`amountPaid`, `amountDue`) are recomputed by
+  `src/lib/membershipTotals.ts` — counting `transactions.membership` FK links plus legacy
+  `membership.transactions[]` array links (de-duplicated), against the effective plan price.
