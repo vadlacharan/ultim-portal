@@ -1,0 +1,28 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_API_URL: https://api.129.121.168.37.nip.io
+      NEXT_PUBLIC_SCANNER_URL: https://facility-pass-pro.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: >
+          curl -sf -m 60 -X POST
+          -H "x-api-key: ${{ secrets.DOKPLOY_API_KEY }}"
+          -H 'Content-Type: application/json'
+          -d '{"applicationId":"${{ secrets.DOKPLOY_APP_ID }}"}'
+          http://129.121.168.37:3000/api/application.deploy
