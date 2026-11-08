@@ -31,7 +31,7 @@ export default function SettingsPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <Card className="border-border/60 bg-card/60 xl:col-span-2">
+        <Card className="border-border bg-card xl:col-span-2">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Account</CardTitle>
           </CardHeader>
@@ -39,7 +39,7 @@ export default function SettingsPage() {
             {rows.map(({ icon: Icon, label, value }) => (
               <div key={label}>
                 <div className="flex items-center gap-3 px-1 py-3">
-                  <span className="flex size-8 items-center justify-center rounded-lg bg-white/5 text-muted-foreground">
+                  <span className="flex size-8 items-center justify-center rounded-lg bg-accent text-muted-foreground">
                     <Icon className="size-4" />
                   </span>
                   <div className="min-w-0 flex-1">
@@ -59,7 +59,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-semibold">Security</CardTitle>
             <Badge variant="secondary" className="text-[10px]">

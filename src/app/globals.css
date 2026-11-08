@@ -7,9 +7,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-heading: var(--font-display);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,43 +52,101 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ULTIM "Ember on Black" — the portal is dark-only by design. */
-:root,
-.dark {
-  --background: #08080a;
-  --foreground: #f4f4f5;
-  --card: #121215;
-  --card-foreground: #f4f4f5;
-  --popover: #141417;
-  --popover-foreground: #f4f4f5;
+/*
+ * ULTIM Portal — "Arena" design system.
+ * Source of truth: Sports-Arena-Home-Screen/DESIGN-HANDOFF.md + index.html
+ * Display: Barlow Condensed (uppercase, tight) · Body: Manrope
+ * Accent: arena orange #ff6a1a / hot #ff5100 · Success: #7bd99a (dark) / deep green (light)
+ */
+:root {
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+
+  /* Light — warm paper, same orange language as the Arena export */
+  --background: #f6f2ea;
+  --foreground: #0a0b0d;
+  --card: #fffdf8;
+  --card-foreground: #0a0b0d;
+  --popover: #fffdf8;
+  --popover-foreground: #0a0b0d;
   --primary: #ff5a1f;
-  --primary-foreground: #150a04;
-  --secondary: #e9b54c;
-  --secondary-foreground: #1e1710;
-  --muted: #1a1a1f;
-  --muted-foreground: #a1a1aa;
-  --accent: #1f1f25;
-  --accent-foreground: #f4f4f5;
-  --destructive: #f3727f;
-  --border: rgba(255, 255, 255, 0.09);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #ff5a1f;
-  --success: #34d399;
-  --gold: #e9b54c;
-  --chart-1: #ff5a1f;
-  --chart-2: #e9b54c;
-  --chart-3: #ff8a50;
-  --chart-4: #34d399;
-  --chart-5: #539df5;
-  --radius: 0.7rem;
-  --sidebar: #0c0c0f;
-  --sidebar-foreground: #e4e4e7;
+  --primary-foreground: #0a0b0d;
+  --secondary: #ece5d5;
+  --secondary-foreground: #0a0b0d;
+  --muted: #ece5d5;
+  --muted-foreground: #6b6e75;
+  --accent: #ece5d5;
+  --accent-foreground: #0a0b0d;
+  --destructive: #c62f2f;
+  --border: #e0d9c9;
+  --input: #e0d9c9;
+  --ring: #ff6a1a;
+  --success: #1a7f4b;
+  --gold: #b98a1f;
+  --chart-1: #ff6a1a;
+  --chart-2: #1a7f4b;
+  --chart-3: #b98a1f;
+  --chart-4: #0a0b0d;
+  --chart-5: #6b6e75;
+  --radius: 1.1rem;
+  --arena-line: #e0d9c9;
+  --arena-line-soft: #ece5d5;
+  --arena-paper-dim: #57534a;
+  --arena-muted: #6b6e75;
+  --arena-meta: #8c8881;
+  --arena-orange-soft: rgba(255, 106, 26, 0.12);
+  --sidebar: #efe9db;
+  --sidebar-foreground: #0a0b0d;
   --sidebar-primary: #ff5a1f;
-  --sidebar-primary-foreground: #150a04;
-  --sidebar-accent: #1a1a1f;
-  --sidebar-accent-foreground: #f4f4f5;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #ff5a1f;
+  --sidebar-primary-foreground: #0a0b0d;
+  --sidebar-accent: #e6ddc9;
+  --sidebar-accent-foreground: #0a0b0d;
+  --sidebar-border: #e0d9c9;
+  --sidebar-ring: #ff6a1a;
+}
+
+.dark {
+  /* Dark — exact Arena export tokens */
+  --background: #0a0b0d;
+  --foreground: #f6f2ea;
+  --card: #121417;
+  --card-foreground: #f6f2ea;
+  --popover: #121417;
+  --popover-foreground: #f6f2ea;
+  --primary: #ff6a1a;
+  --primary-foreground: #0a0b0d;
+  --secondary: #23262b;
+  --secondary-foreground: #f6f2ea;
+  --muted: #191b1f;
+  --muted-foreground: #aaa59d;
+  --accent: #191b1f;
+  --accent-foreground: #f6f2ea;
+  --destructive: #f3727f;
+  --border: #2b2d32;
+  --input: #2b2d32;
+  --ring: #ff6a1a;
+  --success: #7bd99a;
+  --gold: #e9b54c;
+  --chart-1: #ff6a1a;
+  --chart-2: #7bd99a;
+  --chart-3: #e9b54c;
+  --chart-4: #ff8a50;
+  --chart-5: #539df5;
+  --radius: 1.1rem;
+  --arena-line: #2b2d32;
+  --arena-line-soft: #202227;
+  --arena-paper-dim: #d8d3ca;
+  --arena-muted: #aaa59d;
+  --arena-meta: #8c8881;
+  --arena-orange-soft: rgba(255, 106, 26, 0.12);
+  --sidebar: #0c0d0f;
+  --sidebar-foreground: #f6f2ea;
+  --sidebar-primary: #ff6a1a;
+  --sidebar-primary-foreground: #0a0b0d;
+  --sidebar-accent: #191b1f;
+  --sidebar-accent-foreground: #f6f2ea;
+  --sidebar-border: #2b2d32;
+  --sidebar-ring: #ff6a1a;
 }
 
 @layer base {
@@ -95,15 +155,62 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+  }
+  .dark body {
     background-image:
-      linear-gradient(180deg, rgba(255, 90, 31, 0.05) 0%, rgba(8, 8, 10, 0) 32%),
-      radial-gradient(1100px 520px at 92% -8%, rgba(255, 90, 31, 0.10), transparent 60%),
-      radial-gradient(900px 480px at -6% 108%, rgba(255, 90, 31, 0.06), transparent 55%);
+      radial-gradient(1100px 520px at 92% -8%, rgba(255, 106, 26, 0.1), transparent 60%),
+      radial-gradient(900px 480px at -6% 108%, rgba(255, 106, 26, 0.06), transparent 55%);
     background-attachment: fixed;
+  }
+  :root:not(.dark) body {
+    background-image:
+      radial-gradient(1100px 520px at 92% -8%, rgba(255, 106, 26, 0.08), transparent 60%),
+      radial-gradient(900px 480px at -6% 108%, rgba(255, 106, 26, 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  /* Arena focus contract: orange ring everywhere */
+  :where(button, a, input, select, textarea, [role="button"]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  /* Arena display type for headings */
+  h1.arena-display,
+  h2.arena-display,
+  .arena-display {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.015em;
+    line-height: 0.95;
   }
 }
 
 @layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  /* Eyebrow label — Arena section kickers */
+  .arena-eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+  .arena-eyebrow-muted {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--arena-muted);
+  }
   .text-gradient-ember {
     background-image: linear-gradient(90deg, #ff8a50, #ff5a1f);
     -webkit-background-clip: text;
@@ -117,7 +224,13 @@
     color: transparent;
   }
   .surface-glass {
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: color-mix(in srgb, var(--card) 72%, transparent);
+    border: 1px solid var(--border);
+  }
+  /* Arena stat numerals */
+  .arena-numeral {
+    font-family: var(--font-display);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
   }
 }

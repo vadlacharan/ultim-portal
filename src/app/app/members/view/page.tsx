@@ -129,7 +129,7 @@ export default function MemberProfilePage() {
   if (error || !profile) {
     return (
       <div className="surface-glass mx-auto max-w-md rounded-2xl px-6 py-14 text-center">
-        <CircleAlert className="mx-auto size-6 text-secondary" />
+        <CircleAlert className="mx-auto size-6 text-gold" />
         <h2 className="mt-3 text-sm font-semibold">{error ?? "Member not found"}</h2>
         <Button asChild variant="outline" size="sm" className="mt-4">
           <Link href="/app/members">
@@ -197,7 +197,7 @@ export default function MemberProfilePage() {
 
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         {KPIS.map(({ label, value, icon: Icon }) => (
-          <Card key={label} className="border-border/60 bg-card/60">
+          <Card key={label} className="border-border bg-card">
             <CardContent className="flex items-center justify-between pt-5">
               <div>
                 <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -214,7 +214,7 @@ export default function MemberProfilePage() {
       <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
         {/* Passes + sessions */}
         <div className="space-y-4 xl:col-span-2">
-          <Card className="border-border/60 bg-card/60">
+          <Card className="border-border bg-card">
             <CardHeader className="flex-row items-center justify-between space-y-0">
               <CardTitle className="text-sm font-semibold">Membership passes</CardTitle>
               <span className="text-xs text-muted-foreground">{passes.length} total</span>
@@ -251,7 +251,7 @@ export default function MemberProfilePage() {
                           </Badge>
                         )}
                         {pass.due > 0 && (
-                          <Badge className="border-transparent bg-secondary/15 text-secondary">
+                          <Badge className="border-transparent bg-gold/15 text-gold">
                             {formatINR(pass.due)} due
                           </Badge>
                         )}
@@ -304,7 +304,7 @@ export default function MemberProfilePage() {
           </Card>
 
           {/* Recent sessions */}
-          <Card className="border-border/60 bg-card/60">
+          <Card className="border-border bg-card">
             <CardHeader>
               <CardTitle className="text-sm font-semibold">Recent sessions</CardTitle>
             </CardHeader>
@@ -349,7 +349,7 @@ export default function MemberProfilePage() {
         </div>
 
         {/* Payments — dense single-line rows */}
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-semibold">Payments</CardTitle>
             <span className="text-xs text-muted-foreground">
@@ -358,7 +358,7 @@ export default function MemberProfilePage() {
           </CardHeader>
           <CardContent className="space-y-1">
             {totals.unlinkedPayments > 0 && (
-              <div className="mb-2 flex items-center gap-2 rounded-lg border border-secondary/30 bg-secondary/8 px-3 py-1.5 text-[11px] text-secondary">
+              <div className="mb-2 flex items-center gap-2 rounded-lg border border-gold/30 bg-gold/10 px-3 py-1.5 text-[11px] text-gold">
                 <CircleAlert className="size-3.5 shrink-0" />
                 <span className="truncate">
                   {totals.unlinkedPayments} payment
@@ -375,7 +375,7 @@ export default function MemberProfilePage() {
               payments.map((payment) => (
                 <div
                   key={payment.id}
-                  className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 transition-colors hover:bg-white/[0.03]"
+                  className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 transition-colors hover:bg-accent"
                 >
                   <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[rgba(52,211,153,0.12)] text-[var(--success)]">
                     <Receipt className="size-3" />
@@ -393,7 +393,7 @@ export default function MemberProfilePage() {
                     className={
                       payment.linkedPassId
                         ? "min-w-0 flex-1 truncate text-xs text-muted-foreground"
-                        : "min-w-0 flex-1 truncate text-xs text-secondary"
+                        : "min-w-0 flex-1 truncate text-xs text-gold"
                     }
                     title={payment.linkedPassName ?? "Not linked to a pass"}
                   >

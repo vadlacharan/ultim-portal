@@ -131,7 +131,7 @@ export default function UsersPage() {
           <div className="surface-glass overflow-hidden rounded-2xl">
             <Table>
               <TableHeader>
-                <TableRow className="border-border/60 hover:bg-transparent">
+                <TableRow className="border-border hover:bg-transparent">
                   <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
                     User
                   </TableHead>
@@ -156,11 +156,11 @@ export default function UsersPage() {
                   return (
                     <TableRow
                       key={user.id}
-                      className="border-border/40 transition-colors hover:bg-white/[0.03]"
+                      className="border-border/40 transition-colors hover:bg-accent"
                     >
                       <TableCell className="py-3">
                         <div className="flex items-center gap-3">
-                          <span className="flex size-9 items-center justify-center rounded-full bg-white/5 text-xs font-semibold text-muted-foreground">
+                          <span className="flex size-9 items-center justify-center rounded-full bg-accent text-xs font-semibold text-muted-foreground">
                             {initialsOf(user.fullName ?? user.email)}
                           </span>
                           <div className="min-w-0">

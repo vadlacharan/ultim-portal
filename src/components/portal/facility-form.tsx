@@ -136,7 +136,7 @@ export function FacilityForm({
   return (
     <div className="space-y-6 pb-24">
       {/* Profile */}
-      <Card className="border-border/60 bg-card/60">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-sm font-semibold">Profile</CardTitle>
         </CardHeader>
@@ -177,7 +177,7 @@ export function FacilityForm({
       </Card>
 
       {/* Location */}
-      <Card className="border-border/60 bg-card/60">
+      <Card className="border-border bg-card">
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-sm font-semibold">Location</CardTitle>
           <span className="text-xs text-muted-foreground">{locationSummary}</span>
@@ -219,7 +219,7 @@ export function FacilityForm({
       </Card>
 
       {/* Activities & courts */}
-      <Card className="border-border/60 bg-card/60">
+      <Card className="border-border bg-card">
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-sm font-semibold">Activities & courts</CardTitle>
           <Button variant="outline" size="sm" onClick={addActivity}>
@@ -347,7 +347,7 @@ export function FacilityForm({
       </Card>
 
       {/* Photos */}
-      <Card className="border-border/60 bg-card/60">
+      <Card className="border-border bg-card">
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-sm font-semibold">Photos</CardTitle>
           <Button
@@ -378,7 +378,7 @@ export function FacilityForm({
               {photoList.map((photo) => (
                 <div
                   key={photo.id}
-                  className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border/60 bg-white/5"
+                  className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border bg-accent"
                 >
                   {photo.url ? (
                     <Image
@@ -408,7 +408,7 @@ export function FacilityForm({
       </Card>
 
       {/* Sticky save bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/90 px-4 py-3 backdrop-blur-xl lg:pl-72">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 px-4 py-3 backdrop-blur-xl lg:pl-72">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
             {dirty ? "You have unsaved changes." : "All changes saved."}

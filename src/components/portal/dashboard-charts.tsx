@@ -7,6 +7,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { useChartChrome } from "./chart-theme";
 import { formatINR, formatNumber } from "@/lib/format";
 
 const bookingsConfig = {
@@ -30,6 +31,7 @@ export function ActivityBarChart({
 }: {
   data: { activity: string; label: string; bookings: number }[];
 }) {
+  const chrome = useChartChrome();
   if (data.length === 0) {
     return (
       <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
@@ -41,7 +43,7 @@ export function ActivityBarChart({
   return (
     <ChartContainer config={bookingsConfig} className="h-64 w-full">
       <BarChart data={data} layout="vertical" margin={{ left: 4, right: 16, top: 4 }}>
-        <CartesianGrid horizontal={false} stroke="rgba(255,255,255,0.06)" />
+        <CartesianGrid horizontal={false} stroke={chrome.grid} />
         <XAxis type="number" hide />
         <YAxis
           dataKey="label"
@@ -49,10 +51,10 @@ export function ActivityBarChart({
           width={86}
           tickLine={false}
           axisLine={false}
-          tick={{ fontSize: 10, fill: "rgba(255,255,255,0.55)" }}
+          tick={{ fontSize: 10, fill: chrome.tickStrong }}
         />
         <ChartTooltip
-          cursor={{ fill: "rgba(255,255,255,0.04)" }}
+          cursor={{ fill: chrome.cursor }}
           content={
             <ChartTooltipContent
               hideLabel
@@ -78,6 +80,7 @@ export function PeakHoursChart({
 }: {
   data: { hour: number; label: string; bookings: number }[];
 }) {
+  const chrome = useChartChrome();
   const total = data.reduce((sum, item) => sum + item.bookings, 0);
   if (total === 0) {
     return (
@@ -90,24 +93,24 @@ export function PeakHoursChart({
   return (
     <ChartContainer config={bookingsConfig} className="h-64 w-full">
       <BarChart data={data} margin={{ left: 0, right: 4, top: 8 }}>
-        <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.06)" />
+        <CartesianGrid vertical={false} stroke={chrome.grid} />
         <XAxis
           dataKey="label"
           tickLine={false}
           axisLine={false}
           tickMargin={8}
           interval={1}
-          tick={{ fontSize: 10, fill: "rgba(255,255,255,0.45)" }}
+          tick={{ fontSize: 10, fill: chrome.tick }}
         />
         <YAxis
           width={30}
           allowDecimals={false}
           tickLine={false}
           axisLine={false}
-          tick={{ fontSize: 10, fill: "rgba(255,255,255,0.45)" }}
+          tick={{ fontSize: 10, fill: chrome.tick }}
         />
         <ChartTooltip
-          cursor={{ fill: "rgba(255,255,255,0.04)" }}
+          cursor={{ fill: chrome.cursor }}
           content={
             <ChartTooltipContent
               hideLabel

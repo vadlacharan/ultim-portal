@@ -366,7 +366,7 @@ export default function TransactionsPage() {
           <div className="surface-glass overflow-hidden rounded-2xl">
             <Table>
               <TableHeader>
-                <TableRow className="border-border/60 hover:bg-transparent">
+                <TableRow className="border-border hover:bg-transparent">
                   <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
                     Date
                   </TableHead>
@@ -391,7 +391,7 @@ export default function TransactionsPage() {
                 {transactions.docs.map((tx) => (
                   <TableRow
                     key={tx.id}
-                    className="border-border/40 transition-colors hover:bg-white/[0.03]"
+                    className="border-border/40 transition-colors hover:bg-accent"
                   >
                     <TableCell className="py-3 text-xs text-muted-foreground">
                       {formatDateTime(tx.transactionDate)}

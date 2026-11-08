@@ -231,6 +231,7 @@ export default function DashboardPage() {
     <div className={loading ? "opacity-60 transition-opacity" : "transition-opacity"}>
       <PageHeader
         title="Dashboard"
+        eyebrow="Control room"
         description={`${facilityLabel} · last ${days} days · cancelled bookings excluded from session metrics.`}
         actions={
           <>
@@ -259,17 +260,17 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {KPI_CARDS.map(({ label, value, icon: Icon }) => (
-          <Card key={label} className="border-border/60 bg-card/60">
+          <Card key={label} className="border-border bg-card">
             <CardContent className="flex items-start justify-between gap-3 pt-5">
               <div className="min-w-0">
-                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                <p className="arena-eyebrow-muted">
                   {label}
                 </p>
-                <p className="mt-2 truncate text-2xl font-semibold tracking-tight xl:text-3xl">
+                <p className="arena-numeral mt-2 truncate text-[34px] leading-none font-semibold text-foreground">
                   {value}
                 </p>
               </div>
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Icon className="size-4" />
               </span>
             </CardContent>
@@ -279,7 +280,7 @@ export default function DashboardPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-5">
         <Card
-          className="border-border/60 bg-card/60 xl:col-span-3"
+          className="border-border bg-card xl:col-span-3"
           title="Facility-wide; the activity filter applies to session metrics only."
         >
           <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -292,7 +293,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card
-          className="border-border/60 bg-card/60 xl:col-span-2"
+          className="border-border bg-card xl:col-span-2"
           title="Facility-wide; the activity filter applies to session metrics only."
         >
           <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -306,7 +307,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-5">
-        <Card className="border-border/60 bg-card/60 xl:col-span-2">
+        <Card className="border-border bg-card xl:col-span-2">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Bookings by activity</CardTitle>
           </CardHeader>
@@ -315,7 +316,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-card/60 xl:col-span-3">
+        <Card className="border-border bg-card xl:col-span-3">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Peak booking hours</CardTitle>
           </CardHeader>
@@ -326,7 +327,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-5">
-        <Card className="border-border/60 bg-card/60 xl:col-span-2">
+        <Card className="border-border bg-card xl:col-span-2">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-semibold">Getting set up</CardTitle>
             <span className="text-xs text-muted-foreground">
@@ -338,7 +339,7 @@ export default function DashboardPage() {
               <Link
                 key={step.label}
                 href={step.href}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-white/5"
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-accent"
               >
                 {step.done ? (
                   <CheckCircle2 className="size-4 shrink-0 text-[var(--success)]" />
@@ -358,7 +359,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-card/60 xl:col-span-3">
+        <Card className="border-border bg-card xl:col-span-3">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Recent activity</CardTitle>
           </CardHeader>
@@ -374,7 +375,7 @@ export default function DashboardPage() {
                     className={
                       item.kind === "payment"
                         ? "flex size-8 items-center justify-center rounded-full bg-[rgba(52,211,153,0.12)] text-[var(--success)]"
-                        : "flex size-8 items-center justify-center rounded-full bg-[rgba(233,181,76,0.12)] text-secondary"
+                        : "flex size-8 items-center justify-center rounded-full bg-[rgba(233,181,76,0.12)] text-gold"
                     }
                   >
                     {item.kind === "payment" ? (
@@ -410,7 +411,7 @@ export default function DashboardPage() {
           <Link
             key={item.href}
             href={item.href}
-            className="surface-glass group flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition-colors hover:bg-white/[0.06]"
+            className="surface-glass group flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition-colors hover:bg-accent"
           >
             <item.icon className="size-4 text-primary" />
             <span>{item.label}</span>

@@ -119,7 +119,7 @@ export function AllocatePaymentDialog({
                   "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors",
                   selected
                     ? "border-primary/50 bg-primary/8"
-                    : "border-border/60 hover:border-border hover:bg-white/[0.03]",
+                    : "border-border hover:border-border hover:bg-accent",
                 )}
               >
                 <div className="min-w-0 flex-1">
@@ -144,7 +144,7 @@ export function AllocatePaymentDialog({
               "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
               target === "none"
                 ? "border-primary/50 bg-primary/8"
-                : "border-border/60 hover:border-border hover:bg-white/[0.03]",
+                : "border-border hover:border-border hover:bg-accent",
             )}
           >
             General payment (not linked to a pass)

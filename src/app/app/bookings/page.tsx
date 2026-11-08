@@ -430,7 +430,7 @@ export default function BookingsPage() {
       {/* Summary */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
         {KPIS.map(({ label, value, icon: Icon }) => (
-          <Card key={label} className="border-border/60 bg-card/60">
+          <Card key={label} className="border-border bg-card">
             <CardContent className="flex items-center gap-3 pt-4">
               <Icon className="size-4 text-primary" />
               <div>
@@ -458,7 +458,7 @@ export default function BookingsPage() {
             const isAllDay = booking.sessionTime === GYM_ALL_DAY;
             const statusBadge = {
               cancelled: { label: "Cancelled", className: "bg-destructive/12 text-destructive" },
-              completed: { label: "Completed", className: "bg-white/8 text-muted-foreground" },
+              completed: { label: "Completed", className: "bg-accent text-muted-foreground" },
               "in-gym": {
                 label: "In facility",
                 className: "bg-[var(--success)]/12 text-[var(--success)]",
@@ -481,7 +481,7 @@ export default function BookingsPage() {
                 </div>
 
                 <div className="flex min-w-0 flex-1 items-center gap-3">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/5 text-xs font-semibold text-muted-foreground">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-muted-foreground">
                     {initialsOf(member?.fullName ?? member?.email)}
                   </span>
                   <div className="min-w-0">

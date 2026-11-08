@@ -147,13 +147,13 @@ export default function EmployeesPage() {
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardContent className="pt-5">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Team size</p>
             <p className="mt-1 text-2xl font-semibold">{formatNumber(employees.length)}</p>
           </CardContent>
         </Card>
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardContent className="pt-5">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
               Sales recorded
@@ -161,7 +161,7 @@ export default function EmployeesPage() {
             <p className="mt-1 text-2xl font-semibold">{formatNumber(transactions.length)}</p>
           </CardContent>
         </Card>
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardContent className="pt-5">
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
               Desk revenue
@@ -182,7 +182,7 @@ export default function EmployeesPage() {
         <div className="surface-glass overflow-hidden rounded-2xl">
           <Table>
             <TableHeader>
-              <TableRow className="border-border/60 hover:bg-transparent">
+              <TableRow className="border-border hover:bg-transparent">
                 <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
                   Employee
                 </TableHead>
@@ -217,11 +217,11 @@ export default function EmployeesPage() {
                 return (
                   <TableRow
                     key={employee.id}
-                    className="border-border/40 transition-colors hover:bg-white/[0.03]"
+                    className="border-border/40 transition-colors hover:bg-accent"
                   >
                     <TableCell className="py-3">
                       <div className="flex items-center gap-3">
-                        <span className="flex size-9 items-center justify-center rounded-full bg-white/5 text-xs font-semibold text-muted-foreground">
+                        <span className="flex size-9 items-center justify-center rounded-full bg-accent text-xs font-semibold text-muted-foreground">
                           {initialsOf(name)}
                         </span>
                         <div className="min-w-0">

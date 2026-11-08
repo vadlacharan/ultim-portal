@@ -17,9 +17,11 @@ npx tsc --noEmit   # typecheck
 - **Client-only / static SPA.** Every page is a client component. `next.config.ts` uses
   `output: "export"`; there is no server runtime, middleware, route handler, or server action.
   Do not add `src/app/api/*`, `src/proxy.ts`, `"use server"`, or `next/headers` usage.
-- **Dark-only theme.** Never introduce light-mode styles. Use the CSS variables in
-  `src/app/globals.css` (`bg-background`, `text-muted-foreground`, `bg-primary`, `text-secondary`,
-  `var(--success)`, `var(--gold)`). Brand: ember `#FF5A1F`, gold `#E9B54C`.
+- **Arena theme + light/dark modes.** Design system is `Sports-Arena-Home-Screen` (`DESIGN-HANDOFF.md` + `index.html`):
+  night `#0a0b0d`, paper `#f6f2ea`, accent orange `#ff6a1a`/`#ff5100`, success `#7bd99a`.
+  Display type `Barlow Condensed` (uppercase, `font-display` / `.arena-display`), body `Manrope`.
+  Eyebrow kickers use `.arena-eyebrow`, stat numerals use `.arena-numeral`. Radius `16–22px`, pill buttons/badges.
+  Theme is class-based via `next-themes` (`ThemeProvider`, `ThemeToggle`); tokens live in `:root` (light) and `.dark` in `src/app/globals.css`. Never hardcode `white/*` washes or hex text colors outside intentionally-dark previews — use `bg-accent`, `border-border`, `text-muted-foreground`, `text-gold` tokens so both modes work.
 - **All backend access goes through `src/lib/api.ts`** (`payload.list/get/create/update/remove`).
   Components may call these helpers directly; the browser sends the JWT from `localStorage`.
   Set `NEXT_PUBLIC_API_URL`; the Payload server must allow the portal origin via `PORTAL_ORIGINS`.

@@ -154,7 +154,7 @@ export default function PlansPage() {
           <div className="surface-glass overflow-hidden rounded-2xl">
             <Table>
               <TableHeader>
-                <TableRow className="border-border/60 hover:bg-transparent">
+                <TableRow className="border-border hover:bg-transparent">
                   <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
                     Plan
                   </TableHead>
@@ -186,7 +186,7 @@ export default function PlansPage() {
                   return (
                     <TableRow
                       key={plan.id}
-                      className="border-border/40 transition-colors hover:bg-white/[0.03]"
+                      className="border-border/40 transition-colors hover:bg-accent"
                     >
                       <TableCell className="py-3">
                         <p className="font-medium">{plan.planName}</p>

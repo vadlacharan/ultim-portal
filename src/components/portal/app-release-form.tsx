@@ -68,7 +68,7 @@ export function AppReleaseForm({
   return (
     <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
       <div className="space-y-6 xl:col-span-2">
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Release</CardTitle>
           </CardHeader>
@@ -178,7 +178,7 @@ export function AppReleaseForm({
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">What members see</CardTitle>
           </CardHeader>
@@ -222,7 +222,7 @@ export function AppReleaseForm({
       </div>
 
       <div className="space-y-6">
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-semibold">Publishing</CardTitle>
             <Badge variant={form.active ? "default" : "secondary"} className="text-[10px]">
@@ -230,7 +230,7 @@ export function AppReleaseForm({
             </Badge>
           </CardHeader>
           <CardContent className="space-y-5">
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-border/60 bg-white/[0.02] p-3">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-accent/40 p-3">
               <div>
                 <p className="text-sm font-medium">Published</p>
                 <p className="text-[11px] text-muted-foreground">
@@ -262,7 +262,7 @@ export function AppReleaseForm({
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-semibold">
               <Smartphone className="size-4 text-muted-foreground" />
@@ -270,7 +270,7 @@ export function AppReleaseForm({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0c0c0d] p-4 shadow-2xl">
+            <div className="overflow-hidden rounded-2xl border border-border bg-[#0c0c0d] p-4 shadow-2xl">
               <div className="flex items-center justify-between">
                 <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   ULTIM
@@ -286,13 +286,13 @@ export function AppReleaseForm({
               <h3 className="mt-4 text-base font-semibold leading-snug text-white">
                 {form.title || "Update available"}
               </h3>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-zinc-400">
+              <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
                 {form.message ||
                   "A newer ULTIM build is ready with fixes and improvements for booking."}
               </p>
 
               <div className="mt-3 flex items-center gap-2 text-[9px]">
-                <span className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-zinc-400">
+                <span className="rounded-md border border-border bg-accent px-2 py-1 text-muted-foreground">
                   CURRENT 1.0.0
                 </span>
                 <span className="text-[#FF5A1F]">→</span>
@@ -303,7 +303,7 @@ export function AppReleaseForm({
               </div>
 
               {notes.length > 0 && (
-                <ul className="mt-3 space-y-1.5 rounded-lg border border-white/10 bg-white/[0.03] p-2.5">
+                <ul className="mt-3 space-y-1.5 rounded-lg border border-border bg-white/[0.03] p-2.5">
                   {notes.map((note, index) => (
                     <li key={`${note}-${index}`} className="flex gap-2 text-[10px] text-zinc-300">
                       <span className="mt-1 size-1 shrink-0 rounded-full bg-[#FF5A1F]" />

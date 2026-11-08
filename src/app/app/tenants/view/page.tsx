@@ -124,7 +124,7 @@ export default function AdminTenantDetailPage() {
         }
       />
 
-      <Card className="mb-6 border-border/60 bg-card/60">
+      <Card className="mb-6 border-border bg-card">
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-sm font-semibold">Staff accounts</CardTitle>
           <AddPartnerDialog tenantId={tenantId} />

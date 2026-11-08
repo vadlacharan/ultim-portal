@@ -133,7 +133,7 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* Nav */}
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-6 px-4">
           <Link href="/" aria-label="ULTIM home">
             <Logo />
@@ -176,10 +176,10 @@ export default function LandingPage() {
                 <Sparkles className="size-3.5" />
                 Hyper-local sports & fitness
               </Badge>
-              <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="arena-display text-[clamp(48px,6vw,84px)] font-semibold text-foreground">
                 One pass.
                 <br />
-                <span className="text-gradient-ember">Every court & gym.</span>
+                <span className="text-primary">Every court & gym.</span>
               </h1>
               <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground">
                 Find fitness centers and sports courts near you, activate your membership at the
@@ -197,21 +197,21 @@ export default function LandingPage() {
                   <Link href="/app">Partner sign in</Link>
                 </Button>
               </div>
-              <div className="mt-10 grid max-w-md grid-cols-3 gap-6 border-t border-border/60 pt-6">
+              <div className="mt-10 grid max-w-md grid-cols-3 gap-6 border-t border-border pt-6">
                 <div>
-                  <p className="text-2xl font-semibold">{total > 0 ? `${total}+` : "—"}</p>
+                  <p className="arena-numeral text-[30px] leading-none font-semibold">{total > 0 ? `${total}+` : "—"}</p>
                   <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
                     Facilities
                   </p>
                 </div>
                 <div>
-                  <p className="text-2xl font-semibold">3</p>
+                  <p className="arena-numeral text-[30px] leading-none font-semibold">3</p>
                   <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
                     Categories
                   </p>
                 </div>
                 <div>
-                  <p className="text-2xl font-semibold">1 QR</p>
+                  <p className="arena-numeral text-[30px] leading-none font-semibold">1 QR</p>
                   <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
                     For every entry
                   </p>
@@ -222,7 +222,7 @@ export default function LandingPage() {
             {/* Pass card mock */}
             <div className="relative mx-auto w-full max-w-sm">
               <div className="absolute -inset-6 rounded-[2rem] bg-primary/10 blur-2xl" aria-hidden />
-              <div className="surface-glass relative rounded-3xl p-6">
+              <div className="surface-glass relative rounded-[22px] p-6">
                 <div className="flex items-center justify-between">
                   <span className="flex size-10 items-center justify-center rounded-full bg-primary/12 text-primary">
                     <Dumbbell className="size-5" />
@@ -236,7 +236,7 @@ export default function LandingPage() {
                 </div>
                 <p className="mt-6 text-xl font-semibold tracking-tight">Iron Yard Fitness</p>
                 <p className="text-sm text-muted-foreground">Hybrid pass · 3 months</p>
-                <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-foreground/10">
                   <div className="h-full w-2/3 rounded-full bg-gradient-to-r from-[#ff8a50] to-[#ff5a1f]" />
                 </div>
                 <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
@@ -256,17 +256,17 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how" className="border-t border-border/60 py-20">
+        <section id="how" className="border-t border-border py-20">
           <div className="mx-auto w-full max-w-6xl px-4">
             <div className="max-w-2xl">
-              <h2 className="text-3xl font-semibold tracking-tight">How ULTIM works</h2>
+              <p className="arena-eyebrow">How it works</p><h2 className="arena-display mt-2 text-[clamp(34px,4vw,48px)] font-semibold">How ULTIM works</h2>
               <p className="mt-3 text-muted-foreground">
                 Three steps between you and your next session.
               </p>
             </div>
             <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
               {HOW_IT_WORKS.map((step, index) => (
-                <div key={step.title} className="surface-glass rounded-2xl p-6">
+                <div key={step.title} className="surface-glass rounded-[22px] p-6">
                   <div className="flex items-center gap-3">
                     <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <step.icon className="size-4" />
@@ -284,14 +284,14 @@ export default function LandingPage() {
         </section>
 
         {/* Categories */}
-        <section className="border-t border-border/60 py-20">
+        <section className="border-t border-border py-20">
           <div className="mx-auto w-full max-w-6xl px-4">
-            <h2 className="text-3xl font-semibold tracking-tight">Built for every kind of sweat</h2>
+            <p className="arena-eyebrow">Categories</p><h2 className="arena-display mt-2 text-[clamp(34px,4vw,48px)] font-semibold">Built for every kind of sweat</h2>
             <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
               {CATEGORIES.map((category) => (
                 <div
                   key={category.title}
-                  className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card/50 p-6 transition-colors hover:border-primary/30"
+                  className="group relative overflow-hidden rounded-[22px] border border-border bg-card p-6 transition-colors hover:border-primary/30"
                 >
                   <div className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-primary/8 blur-2xl transition-opacity group-hover:opacity-100" />
                   <category.icon className="size-6 text-primary" />
@@ -304,11 +304,11 @@ export default function LandingPage() {
         </section>
 
         {/* Featured facilities */}
-        <section id="facilities" className="border-t border-border/60 py-20">
+        <section id="facilities" className="border-t border-border py-20">
           <div className="mx-auto w-full max-w-6xl px-4">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="text-3xl font-semibold tracking-tight">Live on ULTIM</h2>
+                <p className="arena-eyebrow">Network</p><h2 className="arena-display mt-2 text-[clamp(34px,4vw,48px)] font-semibold">Live on ULTIM</h2>
                 <p className="mt-3 text-muted-foreground">
                   A growing network of partner facilities.
                 </p>
@@ -322,7 +322,7 @@ export default function LandingPage() {
             </div>
 
             {facilities.length === 0 ? (
-              <div className="surface-glass mt-10 rounded-2xl py-16 text-center text-sm text-muted-foreground">
+              <div className="surface-glass mt-10 rounded-[22px] py-16 text-center text-sm text-muted-foreground">
                 Facility listings are coming online — check back shortly.
               </div>
             ) : (
@@ -330,9 +330,9 @@ export default function LandingPage() {
                 {facilities.map((facility) => (
                   <div
                     key={facility.id}
-                    className="group overflow-hidden rounded-2xl border border-border/60 bg-card/50"
+                    className="group overflow-hidden rounded-[22px] border border-border bg-card"
                   >
-                    <div className="relative h-40 overflow-hidden bg-white/5">
+                    <div className="relative h-40 overflow-hidden bg-accent">
                       {facility.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -374,15 +374,13 @@ export default function LandingPage() {
         </section>
 
         {/* Partners */}
-        <section id="partners" className="border-t border-border/60 py-20">
+        <section id="partners" className="border-t border-border py-20">
           <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-4 lg:grid-cols-2">
             <div>
-              <Badge variant="outline" className="mb-5 border-secondary/40 bg-secondary/5 text-secondary">
+              <Badge variant="outline" className="mb-5 border-gold/40 bg-gold/10 text-gold">
                 For facility owners
               </Badge>
-              <h2 className="text-3xl font-semibold tracking-tight">
-                Run your facility like a front desk should
-              </h2>
+              <p className="arena-eyebrow">For facility owners</p><h2 className="arena-display mt-2 text-[clamp(34px,4vw,48px)] font-semibold">Run your facility like a front desk should</h2>
               <p className="mt-4 text-muted-foreground">
                 ULTIM gives your team one workspace for memberships, payments, bookings and gate
                 entry — while the app brings members through your door.
@@ -417,11 +415,9 @@ export default function LandingPage() {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="border-t border-border/60 py-20">
+        <section id="faq" className="border-t border-border py-20">
           <div className="mx-auto w-full max-w-3xl px-4">
-            <h2 className="text-center text-3xl font-semibold tracking-tight">
-              Frequently asked questions
-            </h2>
+            <p className="arena-eyebrow text-center">FAQ</p><h2 className="arena-display mt-2 text-center text-[clamp(34px,4vw,48px)] font-semibold">Frequently asked questions</h2>
             <div className="mt-10 space-y-3">
               {FAQS.map((faq) => (
                 <details
@@ -443,7 +439,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/60 py-10">
+      <footer className="border-t border-border py-10">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 px-4 sm:flex-row">
           <div className="flex items-center gap-4">
             <Logo />

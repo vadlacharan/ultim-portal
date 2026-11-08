@@ -271,7 +271,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
   // ── Success screen ─────────────────────────────────────────────────────────
   if (success) {
     return (
-      <Card className="mx-auto max-w-xl border-border/60 bg-card/60">
+      <Card className="mx-auto max-w-xl border-border bg-card">
         <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
           <span className="flex size-14 items-center justify-center rounded-full bg-[var(--success)]/12 text-[var(--success)]">
             <BadgeCheck className="size-7" />
@@ -349,7 +349,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
 
       {/* Step 0 — Member */}
       {step === 0 && (
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Find or add the member</CardTitle>
           </CardHeader>
@@ -379,7 +379,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                       credits left
                     </span>
                     {snapshot.dues > 0 && (
-                      <span className="text-secondary">
+                      <span className="text-gold">
                         {formatINR(snapshot.dues)} outstanding
                       </span>
                     )}
@@ -406,7 +406,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                 </div>
 
                 {results.length > 0 && (
-                  <div className="divide-y divide-border/50 overflow-hidden rounded-xl border border-border/60">
+                  <div className="divide-y divide-border/50 overflow-hidden rounded-xl border border-border">
                     {results.map((result) => (
                       <button
                         key={result.id}
@@ -416,7 +416,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                           setResults([]);
                           setQuery("");
                         }}
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.04]"
+                        className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-accent"
                       >
                         <CircleUser className="size-4 text-muted-foreground" />
                         <div className="min-w-0 flex-1">
@@ -503,7 +503,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
 
       {/* Step 1 — Plan (activation only) */}
       {step === 1 && !paymentOnly && (
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Choose a plan</CardTitle>
           </CardHeader>
@@ -532,7 +532,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                       "w-full rounded-xl border px-4 py-4 text-left transition-colors",
                       selected
                         ? "border-primary/50 bg-primary/8"
-                        : "border-border/60 hover:border-border hover:bg-white/[0.03]",
+                        : "border-border hover:border-border hover:bg-accent",
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -564,7 +564,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
 
       {/* Step 2 — Payment */}
       {step === 2 && (
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-semibold">Payment</CardTitle>
             {plan && <Badge variant="outline">{plan.planName}</Badge>}
@@ -591,7 +591,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                             "flex w-full flex-wrap items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors",
                             selected
                               ? "border-primary/50 bg-primary/8"
-                              : "border-border/60 hover:border-border hover:bg-white/[0.03]",
+                              : "border-border hover:border-border hover:bg-accent",
                           )}
                         >
                           <div className="min-w-0 flex-1">
@@ -604,7 +604,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                           <Badge
                             className={
                               pass.amountDue > 0
-                                ? "border-transparent bg-secondary/15 text-secondary"
+                                ? "border-transparent bg-gold/15 text-gold"
                                 : "border-transparent bg-[var(--success)]/12 text-[var(--success)]"
                             }
                           >
@@ -622,7 +622,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                         "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
                         passTarget === "none"
                           ? "border-primary/50 bg-primary/8"
-                          : "border-border/60 hover:border-border hover:bg-white/[0.03]",
+                          : "border-border hover:border-border hover:bg-accent",
                       )}
                     >
                       <Wallet className="size-4 text-muted-foreground" />
@@ -731,7 +731,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                 <Separator className="bg-border/50" />
                 <div className="flex items-center justify-between font-medium">
                   <span>Remaining due</span>
-                  <span className={amountDue > 0 ? "text-secondary" : "text-[var(--success)]"}>
+                  <span className={amountDue > 0 ? "text-gold" : "text-[var(--success)]"}>
                     {formatINR(amountDue)}
                   </span>
                 </div>
@@ -743,7 +743,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
 
       {/* Step 3 — Review */}
       {step === 3 && member && (plan || paymentOnly) && (
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">
               {paymentOnly ? "Review & record payment" : "Review & activate"}
@@ -789,7 +789,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                         <span
                           className={
                             Math.max(0, selectedPass.amountDue - amountValue) > 0
-                              ? "font-medium text-secondary"
+                              ? "font-medium text-gold"
                               : "text-[var(--success)]"
                           }
                         >
@@ -822,7 +822,7 @@ export function ActivationWizard({ presetMember, presetPlanId, paymentOnly = fal
                     <span className="text-muted-foreground">Due after payment</span>
                     <span
                       className={
-                        amountDue > 0 ? "font-medium text-secondary" : "text-[var(--success)]"
+                        amountDue > 0 ? "font-medium text-gold" : "text-[var(--success)]"
                       }
                     >
                       {formatINR(amountDue)}

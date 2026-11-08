@@ -30,20 +30,21 @@ function LoginContent() {
     <div className="flex min-h-dvh flex-1">
       {/* Brand panel */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden border-r border-border p-12 lg:flex">
-        <div className="absolute inset-0 bg-[radial-gradient(800px_420px_at_85%_-10%,rgba(255,90,31,0.22),transparent_60%),radial-gradient(700px_380px_at_-10%_110%,rgba(233,181,76,0.10),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(800px_420px_at_85%_-10%,rgba(255,106,26,0.22),transparent_60%),radial-gradient(700px_380px_at_-10%_110%,rgba(255,106,26,0.08),transparent_55%)]" />
         <div className="relative">
           <Logo />
         </div>
         <div className="relative space-y-8">
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight">
+          <p className="arena-eyebrow">Ultim partner portal</p>
+          <h1 className="arena-display text-[clamp(48px,5vw,72px)] font-semibold text-foreground">
             Your facility,
             <br />
-            <span className="text-gradient-ember">one control room.</span>
+            <span className="text-primary">one control room.</span>
           </h1>
           <ul className="space-y-4">
             {HIGHLIGHTS.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-center gap-3 text-sm text-muted-foreground">
-                <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <Icon className="size-4" />
                 </span>
                 {text}
@@ -63,8 +64,11 @@ function LoginContent() {
             <Logo />
           </div>
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold tracking-tight">Sign in to your workspace</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="arena-eyebrow">Staff sign in</p>
+            <h2 className="arena-display mt-2 text-[clamp(34px,4vw,44px)] font-semibold text-foreground">
+              Sign in to your workspace
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Use the email and password shared with you by ULTIM.
             </p>
           </div>

@@ -42,7 +42,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-border/60 py-1 pl-1 pr-2.5 transition-colors hover:bg-white/5">
+      <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-border py-1 pl-1 pr-2.5 transition-colors hover:bg-accent">
         <Avatar className="size-7">
           <AvatarFallback className="bg-primary/15 text-[11px] font-semibold text-primary">
             {initials}

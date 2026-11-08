@@ -98,7 +98,7 @@ export function PlanForm({
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* Basics */}
-        <Card className="border-border/60 bg-card/60 xl:col-span-2">
+        <Card className="border-border bg-card xl:col-span-2">
           <CardHeader>
             <CardTitle className="text-sm font-semibold">Plan basics</CardTitle>
           </CardHeader>
@@ -188,11 +188,11 @@ export function PlanForm({
         </Card>
 
         {/* Pricing */}
-        <Card className="border-border/60 bg-card/60">
+        <Card className="border-border bg-card">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-sm font-semibold">Pricing</CardTitle>
             {savings > 0 && (
-              <Badge className="border-transparent bg-secondary/15 text-secondary">
+              <Badge className="border-transparent bg-gold/15 text-gold">
                 SAVE ₹{savings}
               </Badge>
             )}
@@ -239,7 +239,7 @@ export function PlanForm({
                 The most your desk staff can knock off during activation.
               </p>
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-border/60 px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Plan active</p>
                 <p className="text-[11px] text-muted-foreground">Hidden plans can’t be sold.</p>
@@ -254,7 +254,7 @@ export function PlanForm({
       </div>
 
       {/* Activities */}
-      <Card className="border-border/60 bg-card/60">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-sm font-semibold">Supported activities</CardTitle>
         </CardHeader>
@@ -292,7 +292,7 @@ export function PlanForm({
       </Card>
 
       {/* Slots */}
-      <Card className="border-border/60 bg-card/60">
+      <Card className="border-border bg-card">
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-sm font-semibold">Bookable start times</CardTitle>
           <span className="text-xs text-muted-foreground">
