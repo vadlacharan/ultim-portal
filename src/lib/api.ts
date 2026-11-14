@@ -180,6 +180,7 @@ export type MembershipPlan = {
   description?: string | null;
   category?: "fitness" | "sports" | "health" | null;
   supportedActivities?: string[] | null;
+  type?: string | null;
   planPrice?: number | null;
   discountedPrice?: number | null;
   MembershipPlanMaximumDiscount?: number | null;
@@ -280,7 +281,14 @@ export type EnquiryDoc = {
   tenant?: number | Tenant | null;
   enquiryConsultant?: EmployeeDoc | number | null;
   fullName?: string | null;
-  gender?: "male" | "female" | null;
+  gender?: "male" | "female" | "other" | "not-specified" | null;
+  age?: number | null;
+  segment?: "adult" | "parent" | "kid" | null;
+  parentName?: string | null;
+  parentAge?: number | null;
+  interestedActivity?: string | null;
+  interestedPlan?: number | null;
+  walkInDate?: string | null;
   email?: string | null;
   contact?: string | null;
   source?: "walk-in" | "website" | "referral" | "ad" | null;

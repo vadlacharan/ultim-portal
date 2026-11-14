@@ -10,6 +10,7 @@ import { PageSkeleton } from "@/components/portal/skeletons/page-skeleton";
 import {
   AssignConsultantSelect,
   ConvertLeadButton,
+  EditLeadDialog,
   LeadStatusSelect,
   NewLeadDialog,
 } from "@/components/portal/lead-controls";
@@ -233,6 +234,27 @@ export default function LeadsPage() {
                             {lead.notes}
                           </p>
                         )}
+                        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                          {lead.segment && lead.segment !== "adult" ? (
+                            <Badge variant="secondary" className="text-[10px] capitalize">
+                              {lead.segment}
+                            </Badge>
+                          ) : null}
+                          {lead.age != null ? <span>Age {lead.age}</span> : null}
+                          {lead.gender ? <span className="capitalize">{lead.gender === "not-specified" ? "Gender not specified" : lead.gender}</span> : null}
+                          {lead.interestedActivity ? (
+                            <span className="capitalize">Interested in {lead.interestedActivity}</span>
+                          ) : null}
+                          {lead.segment === "kid" && lead.parentName ? (
+                            <span>Parent: {lead.parentName}</span>
+                          ) : null}
+                          {lead.segment === "kid" && lead.parentAge != null ? (
+                            <span>Parent age {lead.parentAge}</span>
+                          ) : null}
+                          {lead.walkInDate ? (
+                            <span>Walked in {formatDate(lead.walkInDate)}</span>
+                          ) : null}
+                        </div>
                       </TableCell>
                       <TableCell className="py-3">
                         <Badge variant="outline" className="text-[10px]">
@@ -259,13 +281,23 @@ export default function LeadsPage() {
                         {formatDate(lead.createdAt)}
                       </TableCell>
                       <TableCell className="py-3 text-right">
-                        {converted ? (
-                          <Badge className="border-transparent bg-[var(--success)]/12 text-[var(--success)]">
-                            Converted
-                          </Badge>
-                        ) : (
-                          <ConvertLeadButton leadId={lead.id} />
-                        )}
+                        <div className="flex items-center justify-end gap-2">
+                          <EditLeadDialog
+                            lead={lead}
+                            trigger={
+                              <Button size="sm" variant="ghost" className="text-xs">
+                                Edit
+                              </Button>
+                            }
+                          />
+                          {converted ? (
+                            <Badge className="border-transparent bg-[var(--success)]/12 text-[var(--success)]">
+                              Converted
+                            </Badge>
+                          ) : (
+                            <ConvertLeadButton leadId={lead.id} />
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );

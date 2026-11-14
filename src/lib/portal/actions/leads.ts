@@ -9,13 +9,50 @@ export type LeadActionResult = {
   memberId?: number;
 };
 
-export type CreateLeadInput = {
+export type LeadSegment = "adult" | "parent" | "kid";
+
+export type LeadDetailsInput = {
+  age?: number | null;
+  gender?: "male" | "female" | "other" | "not-specified" | null;
+  segment?: LeadSegment;
+  parentName?: string;
+  parentAge?: number | null;
+  interestedActivity?: string | null;
+  interestedPlan?: number | null;
+  walkInDate?: string | null;
+};
+
+export type CreateLeadInput = LeadDetailsInput & {
   fullName: string;
   contact: string;
   email?: string;
   source: "walk-in" | "website" | "referral" | "ad";
   notes?: string;
 };
+
+export type UpdateLeadInput = LeadDetailsInput & {
+  leadId: number;
+  fullName?: string;
+  contact?: string;
+  email?: string;
+  source?: "walk-in" | "website" | "referral" | "ad";
+  notes?: string;
+  status?: string;
+};
+
+const normalizeLeadDetails = (input: LeadDetailsInput) => ({
+  age: input.age === null || input.age === undefined ? undefined : Number(input.age),
+  gender: input.gender ?? undefined,
+  segment: input.segment ?? "adult",
+  parentName: input.segment === "kid" ? input.parentName?.trim() : undefined,
+  parentAge:
+    input.segment === "kid" && input.parentAge !== null && input.parentAge !== undefined
+      ? Number(input.parentAge)
+      : undefined,
+  interestedActivity: input.interestedActivity || undefined,
+  interestedPlan: input.interestedPlan ?? undefined,
+  walkInDate: input.walkInDate || undefined,
+});
 
 export async function createLeadAction(input: CreateLeadInput): Promise<LeadActionResult> {
   const { token } = await requireApiAuth();
@@ -36,6 +73,7 @@ export async function createLeadAction(input: CreateLeadInput): Promise<LeadActi
         source: input.source,
         status: "new",
         notes: input.notes?.trim() || undefined,
+        ...normalizeLeadDetails(input),
       },
       token,
     );
@@ -44,6 +82,39 @@ export async function createLeadAction(input: CreateLeadInput): Promise<LeadActi
     return {
       ok: false,
       error: err instanceof ApiError ? err.message : "Could not save the lead.",
+    };
+  }
+}
+
+export async function updateLeadAction(input: UpdateLeadInput): Promise<LeadActionResult> {
+  const { token } = await requireApiAuth();
+
+  const data: Record<string, unknown> = {};
+
+  if (input.fullName !== undefined) {
+    const fullName = input.fullName.trim();
+    if (!fullName) return { ok: false, error: "Lead name is required." };
+    data.fullName = fullName;
+  }
+  if (input.contact !== undefined) {
+    const contact = input.contact.replace(/\s+/g, "").trim();
+    if (!contact) return { ok: false, error: "Phone or contact is required." };
+    data.contact = contact;
+  }
+  if (input.email !== undefined) data.email = input.email.trim().toLowerCase() || null;
+  if (input.source !== undefined) data.source = input.source;
+  if (input.status !== undefined) data.status = input.status;
+  if (input.notes !== undefined) data.notes = input.notes.trim() || null;
+
+  Object.assign(data, normalizeLeadDetails(input));
+
+  try {
+    await payload.update<EnquiryDoc>("enquiry", input.leadId, data, token);
+    return { ok: true, message: "Lead updated" };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof ApiError ? err.message : "Could not update the lead.",
     };
   }
 }

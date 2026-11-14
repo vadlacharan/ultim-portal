@@ -11,7 +11,7 @@ import * as profile from "./portal/actions/profile";
 import * as tenants from "./portal/actions/tenants";
 import * as users from "./portal/actions/users";
 import type { AppReleaseInput } from "./portal/actions/app-releases";
-import type { CreateLeadInput } from "./portal/actions/leads";
+import type { CreateLeadInput, UpdateLeadInput } from "./portal/actions/leads";
 import type { EmployeeInput } from "./portal/actions/employees";
 import type { FacilityInput } from "./portal/actions/facility";
 import type { PlanInput } from "./portal/actions/plans";
@@ -84,6 +84,8 @@ export const portalCall = {
   // Leads
   createLead: (input: CreateLeadInput) =>
     mutate(() => leads.createLeadAction(input), "Could not create the lead."),
+  updateLead: (input: UpdateLeadInput) =>
+    mutate(() => leads.updateLeadAction(input), "Could not update the lead."),
   updateLeadStatus: (leadId: number, status: string) =>
     mutate(() => leads.updateLeadStatusAction(leadId, status), "Could not update the lead."),
   assignConsultant: (leadId: number, employeeId: number | null) =>
