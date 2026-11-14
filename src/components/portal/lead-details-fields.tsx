@@ -57,19 +57,43 @@ export const leadDetailsToState = (lead: {
   walkInDate: lead.walkInDate ? lead.walkInDate.slice(0, 10) : "",
 });
 
+export function LeadSection({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="space-y-3">
+      <div className="flex items-baseline justify-between gap-3">
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {title}
+        </h3>
+        {hint ? <p className="text-[11px] text-muted-foreground/70">{hint}</p> : null}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+const fieldLabel = "text-xs font-medium text-muted-foreground";
+
 /**
- * Plan picker + activity picker live together so picking a plan can fill the
- * activity automatically (the plan knows which activities it supports).
+ * Profile + interest block shared by the "new lead" and "edit lead" forms.
+ *
+ * The plan picker and the activity picker live together because a plan knows
+ * which activities it supports — picking a plan fills the activity in.
  */
 export function LeadDetailsFields({
   value,
   onChange,
-  showWalkInDate,
   idPrefix = "lead",
 }: {
   value: LeadDetailsState;
   onChange: (next: LeadDetailsState) => void;
-  showWalkInDate: boolean;
   idPrefix?: string;
 }) {
   const { data: plans } = usePortalQuery(async ({ user, token }) => {
@@ -91,141 +115,146 @@ export function LeadDetailsFields({
     const activity = plan?.supportedActivities?.[0] ?? plan?.type ?? null;
     set({
       interestedPlan: planId,
-      // Picking a plan tells us the activity - keep any manual choice if the
-      // plan does not declare one.
+      // A plan tells us the activity - keep any manual choice when the plan
+      // does not declare one.
       interestedActivity: activity ? String(activity).toLowerCase() : value.interestedActivity,
     });
   };
 
+  const isKid = value.segment === "kid";
+
   return (
-    <div className="grid gap-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor={`${idPrefix}-age`}>Age</Label>
-          <Input
-            id={`${idPrefix}-age`}
-            type="number"
-            min={0}
-            max={120}
-            value={value.age}
-            onChange={(event) => set({ age: event.target.value })}
-            placeholder="28"
-            inputMode="numeric"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Gender</Label>
-          <Select value={value.gender || "none"} onValueChange={(next) => set({ gender: next === "none" ? "" : next })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Not specified" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">Not specified</SelectItem>
-              {LEAD_GENDERS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Segment</Label>
-        <Select value={value.segment || "adult"} onValueChange={(next) => set({ segment: next })}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {LEAD_SEGMENTS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {value.segment === "kid" ? (
-        <div className="grid grid-cols-2 gap-4">
+    <div className="space-y-6">
+      <LeadSection title="Profile" hint="Who is this lead?">
+        <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-2">
-            <Label htmlFor={`${idPrefix}-parent-name`}>Parent name</Label>
-            <Input
-              id={`${idPrefix}-parent-name`}
-              value={value.parentName}
-              onChange={(event) => set({ parentName: event.target.value })}
-              placeholder="Anita Sharma"
-            />
+            <Label className={fieldLabel}>Segment</Label>
+            <Select value={value.segment || "adult"} onValueChange={(next) => set({ segment: next })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {LEAD_SEGMENTS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor={`${idPrefix}-parent-age`}>Parent age</Label>
+            <Label className={fieldLabel} htmlFor={`${idPrefix}-age`}>
+              Age
+            </Label>
             <Input
-              id={`${idPrefix}-parent-age`}
+              id={`${idPrefix}-age`}
               type="number"
               min={0}
               max={120}
-              value={value.parentAge}
-              onChange={(event) => set({ parentAge: event.target.value })}
-              placeholder="35"
+              value={value.age}
+              onChange={(event) => set({ age: event.target.value })}
+              placeholder="28"
               inputMode="numeric"
             />
           </div>
-        </div>
-      ) : null}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Interested activity</Label>
-          <Select
-            value={value.interestedActivity || "none"}
-            onValueChange={(next) => set({ interestedActivity: next === "none" ? "" : next })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Not specified" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">Not specified</SelectItem>
-              {LEAD_ACTIVITIES.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-2">
+            <Label className={fieldLabel}>Gender</Label>
+            <Select
+              value={value.gender || "none"}
+              onValueChange={(next) => set({ gender: next === "none" ? "" : next })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Not specified" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Not specified</SelectItem>
+                {LEAD_GENDERS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label>Interested plan</Label>
-          <Select
-            value={value.interestedPlan || "none"}
-            onValueChange={(next) => onPlanChange(next === "none" ? "" : next)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Not specified" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">Not specified</SelectItem>
-              {planOptions.map((plan) => (
-                <SelectItem key={plan.id} value={String(plan.id)}>
-                  {plan.planName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
 
-      {showWalkInDate ? (
-        <div className="space-y-2">
-          <Label htmlFor={`${idPrefix}-walk-in-date`}>Walk-in date</Label>
-          <Input
-            id={`${idPrefix}-walk-in-date`}
-            type="date"
-            value={value.walkInDate}
-            onChange={(event) => set({ walkInDate: event.target.value })}
-          />
+        {isKid ? (
+          <div className="grid gap-4 rounded-xl border border-primary/30 bg-primary/5 p-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label className={fieldLabel} htmlFor={`${idPrefix}-parent-name`}>
+                Parent name <span className="text-primary">*</span>
+              </Label>
+              <Input
+                id={`${idPrefix}-parent-name`}
+                value={value.parentName}
+                onChange={(event) => set({ parentName: event.target.value })}
+                placeholder="Anita Sharma"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className={fieldLabel} htmlFor={`${idPrefix}-parent-age`}>
+                Parent age <span className="text-primary">*</span>
+              </Label>
+              <Input
+                id={`${idPrefix}-parent-age`}
+                type="number"
+                min={0}
+                max={120}
+                value={value.parentAge}
+                onChange={(event) => set({ parentAge: event.target.value })}
+                placeholder="35"
+                inputMode="numeric"
+              />
+            </div>
+          </div>
+        ) : null}
+      </LeadSection>
+
+      <LeadSection title="Interest" hint="What are they asking about?">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label className={fieldLabel}>Interested activity</Label>
+            <Select
+              value={value.interestedActivity || "none"}
+              onValueChange={(next) => set({ interestedActivity: next === "none" ? "" : next })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Not specified" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Not specified</SelectItem>
+                {LEAD_ACTIVITIES.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className={fieldLabel}>Interested plan</Label>
+            <Select
+              value={value.interestedPlan || "none"}
+              onValueChange={(next) => onPlanChange(next === "none" ? "" : next)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Not specified" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Not specified</SelectItem>
+                {planOptions.map((plan) => (
+                  <SelectItem key={plan.id} value={String(plan.id)}>
+                    {plan.planName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      ) : null}
+      </LeadSection>
     </div>
   );
 }

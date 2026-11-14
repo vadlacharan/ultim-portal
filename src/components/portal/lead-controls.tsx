@@ -28,6 +28,7 @@ import { LEAD_STATUSES } from "@/lib/leads";
 import { portalCall } from "@/lib/portal-client";
 import {
   LeadDetailsFields,
+  LeadSection,
   emptyLeadDetails,
   leadDetailsToState,
   type LeadDetailsState,
@@ -45,24 +46,163 @@ const detailsToInput = (details: LeadDetailsState) => ({
   walkInDate: details.walkInDate || null,
 });
 
+const fieldLabel = "text-xs font-medium text-muted-foreground";
+
+type LeadFormState = {
+  fullName: string;
+  contact: string;
+  email: string;
+  source: "walk-in" | "website" | "referral" | "ad";
+  notes: string;
+};
+
+const emptyForm: LeadFormState = {
+  fullName: "",
+  contact: "",
+  email: "",
+  source: "walk-in",
+  notes: "",
+};
+
+/**
+ * Shared form body for adding and editing a lead. Keeping one component means
+ * the two dialogs can never drift apart.
+ */
+function LeadForm({
+  form,
+  onFormChange,
+  details,
+  onDetailsChange,
+  idPrefix,
+}: {
+  form: LeadFormState;
+  onFormChange: (next: LeadFormState) => void;
+  details: LeadDetailsState;
+  onDetailsChange: (next: LeadDetailsState) => void;
+  idPrefix: string;
+}) {
+  const isWalkIn = form.source === "walk-in";
+
+  return (
+    <div className="space-y-6">
+      <LeadSection title="Contact" hint="How do we reach them?">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label className={fieldLabel} htmlFor={`${idPrefix}-name`}>
+              Name <span className="text-primary">*</span>
+            </Label>
+            <Input
+              id={`${idPrefix}-name`}
+              value={form.fullName}
+              onChange={(event) => onFormChange({ ...form, fullName: event.target.value })}
+              placeholder="Rahul Sharma"
+              autoComplete="off"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className={fieldLabel} htmlFor={`${idPrefix}-phone`}>
+              Mobile <span className="text-primary">*</span>
+            </Label>
+            <Input
+              id={`${idPrefix}-phone`}
+              value={form.contact}
+              onChange={(event) =>
+                onFormChange({
+                  ...form,
+                  contact: event.target.value.replace(/\D/g, "").slice(0, 10),
+                })
+              }
+              placeholder="9876543210"
+              inputMode="numeric"
+              autoComplete="off"
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label className={fieldLabel} htmlFor={`${idPrefix}-email`}>
+            Email
+          </Label>
+          <Input
+            id={`${idPrefix}-email`}
+            type="email"
+            value={form.email}
+            onChange={(event) => onFormChange({ ...form, email: event.target.value })}
+            placeholder="rahul@example.com"
+            autoComplete="off"
+          />
+        </div>
+      </LeadSection>
+
+      <LeadSection title="Source" hint="Where did this lead come from?">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label className={fieldLabel}>Source</Label>
+            <Select
+              value={form.source}
+              onValueChange={(value) =>
+                onFormChange({ ...form, source: value as LeadFormState["source"] })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="walk-in">Walk-in</SelectItem>
+                <SelectItem value="website">Website</SelectItem>
+                <SelectItem value="referral">Referral</SelectItem>
+                <SelectItem value="ad">Ad</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {isWalkIn ? (
+            <div className="space-y-2">
+              <Label className={fieldLabel} htmlFor={`${idPrefix}-walk-in-date`}>
+                Walk-in date <span className="text-primary">*</span>
+              </Label>
+              <Input
+                id={`${idPrefix}-walk-in-date`}
+                type="date"
+                value={details.walkInDate}
+                onChange={(event) => onDetailsChange({ ...details, walkInDate: event.target.value })}
+              />
+            </div>
+          ) : null}
+        </div>
+      </LeadSection>
+
+      <LeadDetailsFields value={details} onChange={onDetailsChange} idPrefix={idPrefix} />
+
+      <LeadSection title="Notes">
+        <Textarea
+          id={`${idPrefix}-notes`}
+          rows={3}
+          value={form.notes}
+          onChange={(event) => onFormChange({ ...form, notes: event.target.value })}
+          placeholder="Interested in the badminton 3-month plan, starts next week…"
+        />
+      </LeadSection>
+    </div>
+  );
+}
+
 // ─── New lead ─────────────────────────────────────────────────────────────────
 
 export function NewLeadDialog() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, startSaving] = useTransition();
-  const [form, setForm] = useState({
-    fullName: "",
-    contact: "",
-    email: "",
-    source: "walk-in" as "walk-in" | "website" | "referral" | "ad",
-    notes: "",
-  });
+  const [form, setForm] = useState<LeadFormState>(emptyForm);
   const [details, setDetails] = useState<LeadDetailsState>(emptyLeadDetails);
 
   const isWalkIn = form.source === "walk-in";
-  const missingWalkInDate = isWalkIn && !details.walkInDate;
-  const missingParent = details.segment === "kid" && (!details.parentName.trim() || !details.parentAge);
+  const isKid = details.segment === "kid";
+  const problems: string[] = [];
+  if (!form.fullName.trim()) problems.push("name");
+  if (!form.contact.trim()) problems.push("mobile");
+  if (isWalkIn && !details.walkInDate) problems.push("walk-in date");
+  if (isKid && !details.parentName.trim()) problems.push("parent name");
+  if (isKid && !details.parentAge.trim()) problems.push("parent age");
 
   const submit = () => {
     startSaving(async () => {
@@ -75,7 +215,7 @@ export function NewLeadDialog() {
         return;
       }
       toast.success("Lead added");
-      setForm({ fullName: "", contact: "", email: "", source: "walk-in", notes: "" });
+      setForm(emptyForm);
       setDetails(emptyLeadDetails);
       setOpen(false);
       router.refresh();
@@ -90,95 +230,40 @@ export function NewLeadDialog() {
           New lead
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Add a lead</DialogTitle>
           <DialogDescription>
-            Walk-ins, calls and referrals — track them until they become members.
+            Capture who walked in, what they want and who they came with — then convert them into a
+            member in one click.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-2">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="lead-name">Name</Label>
-              <Input
-                id="lead-name"
-                value={form.fullName}
-                onChange={(event) => setForm((prev) => ({ ...prev, fullName: event.target.value }))}
-                placeholder="Rahul Sharma"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lead-phone">Mobile</Label>
-              <Input
-                id="lead-phone"
-                value={form.contact}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, contact: event.target.value.replace(/\D/g, "").slice(0, 10) }))
-                }
-                placeholder="9876543210"
-                inputMode="numeric"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="lead-email">Email (optional)</Label>
-            <Input
-              id="lead-email"
-              value={form.email}
-              onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
-              placeholder="rahul@example.com"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Source</Label>
-            <Select
-              value={form.source}
-              onValueChange={(value) =>
-                setForm((prev) => ({ ...prev, source: value as typeof prev.source }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="walk-in">Walk-in</SelectItem>
-                <SelectItem value="website">Website</SelectItem>
-                <SelectItem value="referral">Referral</SelectItem>
-                <SelectItem value="ad">Ad</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="lead-notes">Notes</Label>
-            <Textarea
-              id="lead-notes"
-              rows={3}
-              value={form.notes}
-              onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))}
-              placeholder="Interested in badminton 3-month plan…"
-            />
-          </div>
-
-          <LeadDetailsFields
-            value={details}
-            onChange={setDetails}
-            showWalkInDate={isWalkIn}
+        <div className="max-h-[65vh] overflow-y-auto pr-1">
+          <LeadForm
+            form={form}
+            onFormChange={setForm}
+            details={details}
+            onDetailsChange={setDetails}
+            idPrefix="lead"
           />
         </div>
 
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving}>
-            Cancel
-          </Button>
-          <Button
-            onClick={submit}
-            disabled={saving || !form.fullName || !form.contact || missingWalkInDate || missingParent}
-          >
-            {saving ? <Loader2 className="size-4 animate-spin" /> : null}
-            Save lead
-          </Button>
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-muted-foreground">
+            {problems.length > 0
+              ? `Add the ${problems.join(", ")} to save this lead.`
+              : "Everything looks good — ready to save."}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving}>
+              Cancel
+            </Button>
+            <Button onClick={submit} disabled={saving || problems.length > 0}>
+              {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+              Save lead
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -187,22 +272,33 @@ export function NewLeadDialog() {
 
 // ─── Edit lead ────────────────────────────────────────────────────────────────
 
-export function EditLeadDialog({ lead, trigger }: { lead: EnquiryDoc; trigger?: React.ReactNode }) {
+export function EditLeadDialog({
+  lead,
+  trigger,
+}: {
+  lead: EnquiryDoc;
+  trigger?: React.ReactNode;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, startSaving] = useTransition();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<LeadFormState>({
     fullName: lead.fullName ?? "",
     contact: lead.contact ?? "",
     email: lead.email ?? "",
-    source: (lead.source ?? "walk-in") as "walk-in" | "website" | "referral" | "ad",
+    source: (lead.source ?? "walk-in") as LeadFormState["source"],
     notes: lead.notes ?? "",
   });
   const [details, setDetails] = useState<LeadDetailsState>(() => leadDetailsToState(lead));
 
   const isWalkIn = form.source === "walk-in";
-  const missingWalkInDate = isWalkIn && !details.walkInDate;
-  const missingParent = details.segment === "kid" && (!details.parentName.trim() || !details.parentAge);
+  const isKid = details.segment === "kid";
+  const problems: string[] = [];
+  if (!form.fullName.trim()) problems.push("name");
+  if (!form.contact.trim()) problems.push("mobile");
+  if (isWalkIn && !details.walkInDate) problems.push("walk-in date");
+  if (isKid && !details.parentName.trim()) problems.push("parent name");
+  if (isKid && !details.parentAge.trim()) problems.push("parent age");
 
   const submit = () => {
     startSaving(async () => {
@@ -230,92 +326,39 @@ export function EditLeadDialog({ lead, trigger }: { lead: EnquiryDoc; trigger?: 
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Edit lead</DialogTitle>
           <DialogDescription>
-            {lead.fullName ?? "Unnamed lead"} — update the details your team captured.
+            {lead.fullName ?? "Unnamed lead"} — update what your team captured.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-2">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-lead-name">Name</Label>
-              <Input
-                id="edit-lead-name"
-                value={form.fullName}
-                onChange={(event) => setForm((prev) => ({ ...prev, fullName: event.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-lead-phone">Mobile</Label>
-              <Input
-                id="edit-lead-phone"
-                value={form.contact}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, contact: event.target.value.replace(/\D/g, "").slice(0, 10) }))
-                }
-                inputMode="numeric"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-lead-email">Email</Label>
-            <Input
-              id="edit-lead-email"
-              value={form.email}
-              onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Source</Label>
-            <Select
-              value={form.source}
-              onValueChange={(value) =>
-                setForm((prev) => ({ ...prev, source: value as typeof prev.source }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="walk-in">Walk-in</SelectItem>
-                <SelectItem value="website">Website</SelectItem>
-                <SelectItem value="referral">Referral</SelectItem>
-                <SelectItem value="ad">Ad</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-lead-notes">Notes</Label>
-            <Textarea
-              id="edit-lead-notes"
-              rows={3}
-              value={form.notes}
-              onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))}
-            />
-          </div>
-
-          <LeadDetailsFields
-            value={details}
-            onChange={setDetails}
-            showWalkInDate={isWalkIn}
+        <div className="max-h-[65vh] overflow-y-auto pr-1">
+          <LeadForm
+            form={form}
+            onFormChange={setForm}
+            details={details}
+            onDetailsChange={setDetails}
             idPrefix="edit-lead"
           />
         </div>
 
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving}>
-            Cancel
-          </Button>
-          <Button
-            onClick={submit}
-            disabled={saving || !form.fullName || !form.contact || missingWalkInDate || missingParent}
-          >
-            {saving ? <Loader2 className="size-4 animate-spin" /> : null}
-            Save changes
-          </Button>
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-muted-foreground">
+            {problems.length > 0
+              ? `Add the ${problems.join(", ")} to save this lead.`
+              : "Everything looks good — ready to save."}
+          </p>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving}>
+              Cancel
+            </Button>
+            <Button onClick={submit} disabled={saving || problems.length > 0}>
+              {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+              Save changes
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -343,21 +386,18 @@ export function LeadStatusSelect({ leadId, status }: { leadId: number; status: s
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Select value={value} onValueChange={onChange} disabled={saving}>
-        <SelectTrigger className="h-8 w-[150px] text-xs">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {LEAD_STATUSES.map((option) => (
-            <SelectItem key={option.value} value={option.value} className="text-xs">
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      {saving && <Loader2 className="size-3.5 animate-spin text-muted-foreground" />}
-    </div>
+    <Select value={value} onValueChange={onChange} disabled={saving}>
+      <SelectTrigger className="h-8 w-[130px] text-xs">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {LEAD_STATUSES.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 

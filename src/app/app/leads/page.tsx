@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePortalQuery } from "@/hooks/use-portal-query";
-import { payload, type EmployeeDoc, type EnquiryDoc, type PayloadUser } from "@/lib/api";
+import { payload, type EmployeeDoc, type EnquiryDoc, type MembershipPlan, type PayloadUser } from "@/lib/api";
 import { formatDate, titleCase } from "@/lib/format";
 import { tenantScope } from "@/lib/scope";
 import { combineWhere } from "@/lib/where-utils";
@@ -64,7 +64,7 @@ export default function LeadsPage() {
           : undefined,
       );
 
-      const [leads, employeeDocs] = await Promise.all([
+      const [leads, employeeDocs, planDocs] = await Promise.all([
         payload.list<EnquiryDoc>(
           "enquiry",
           { where, page, limit: PAGE_SIZE, sort: "-createdAt", depth: 1 },
@@ -73,6 +73,11 @@ export default function LeadsPage() {
         payload.list<EmployeeDoc>(
           "employee",
           { where: combineWhere(scope), limit: 100, depth: 1 },
+          token,
+        ),
+        payload.list<MembershipPlan>(
+          "membership-plans",
+          { where: combineWhere(scope), limit: 100, depth: 0 },
           token,
         ),
       ]);
@@ -92,7 +97,11 @@ export default function LeadsPage() {
         };
       });
 
-      return { leads, employees, role: user.role };
+      const planNames = new Map(
+        (planDocs.docs ?? []).map((plan) => [String(plan.id), plan.planName]),
+      );
+
+      return { leads, employees, planNames: planNames as unknown as Record<string, string>, role: user.role };
     },
     [page, q, status, source, consultant],
   );
@@ -100,7 +109,7 @@ export default function LeadsPage() {
   if (loading && !data) return <PageSkeleton cards={4} rows={8} />;
   if (!data) return null;
 
-  const { leads, employees, role } = data;
+  const { leads, employees, planNames, role } = data;
   const totalPages = Math.max(1, leads.totalPages ?? 1);
 
   const employeeName = (value: EnquiryDoc["enquiryConsultant"]): string => {
@@ -186,6 +195,12 @@ export default function LeadsPage() {
                     Lead
                   </TableHead>
                   <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
+                    Segment
+                  </TableHead>
+                  <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
+                    Interest
+                  </TableHead>
+                  <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
                     Source
                   </TableHead>
                   <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
@@ -197,7 +212,7 @@ export default function LeadsPage() {
                   <TableHead className="h-11 text-xs uppercase tracking-wider text-muted-foreground">
                     Added
                   </TableHead>
-                  <TableHead className="h-11 w-32" />
+                  <TableHead className="h-11 w-40" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -207,6 +222,10 @@ export default function LeadsPage() {
                     lead.enquiryConsultant && typeof lead.enquiryConsultant !== "number"
                       ? (lead.enquiryConsultant as EmployeeDoc).id
                       : null;
+                  const segment = lead.segment ?? "adult";
+                  const planName = lead.interestedPlan
+                    ? planNames?.[String(lead.interestedPlan)]
+                    : undefined;
 
                   return (
                     <TableRow
@@ -216,54 +235,81 @@ export default function LeadsPage() {
                       <TableCell className="py-3">
                         <p className="font-medium">{lead.fullName ?? "Unnamed lead"}</p>
                         <div className="mt-0.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                          {lead.contact && (
+                          {lead.contact ? (
                             <span className="inline-flex items-center gap-1">
                               <Phone className="size-3" />
                               {lead.contact}
                             </span>
-                          )}
-                          {lead.email && (
+                          ) : null}
+                          {lead.email ? (
                             <span className="inline-flex items-center gap-1">
                               <Mail className="size-3" />
                               {lead.email}
                             </span>
-                          )}
+                          ) : null}
                         </div>
-                        {lead.notes && (
-                          <p className="mt-1 line-clamp-1 max-w-[320px] text-xs text-muted-foreground/70">
+                        {lead.notes ? (
+                          <p className="mt-1 line-clamp-1 max-w-[280px] text-xs text-muted-foreground/70">
                             {lead.notes}
                           </p>
-                        )}
-                        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                          {lead.segment && lead.segment !== "adult" ? (
-                            <Badge variant="secondary" className="text-[10px] capitalize">
-                              {lead.segment}
-                            </Badge>
-                          ) : null}
-                          {lead.age != null ? <span>Age {lead.age}</span> : null}
-                          {lead.gender ? <span className="capitalize">{lead.gender === "not-specified" ? "Gender not specified" : lead.gender}</span> : null}
-                          {lead.interestedActivity ? (
-                            <span className="capitalize">Interested in {lead.interestedActivity}</span>
-                          ) : null}
-                          {lead.segment === "kid" && lead.parentName ? (
-                            <span>Parent: {lead.parentName}</span>
-                          ) : null}
-                          {lead.segment === "kid" && lead.parentAge != null ? (
-                            <span>Parent age {lead.parentAge}</span>
-                          ) : null}
-                          {lead.walkInDate ? (
-                            <span>Walked in {formatDate(lead.walkInDate)}</span>
+                        ) : null}
+                      </TableCell>
+
+                      <TableCell className="py-3">
+                        <div className="flex flex-col items-start gap-1">
+                          <Badge
+                            variant={segment === "kid" ? "default" : "secondary"}
+                            className="text-[10px] capitalize"
+                          >
+                            {segment}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {lead.age != null ? `${lead.age} yrs` : "Age —"}
+                            {lead.gender
+                              ? ` · ${lead.gender === "not-specified" ? "n/s" : lead.gender}`
+                              : ""}
+                          </span>
+                          {segment === "kid" && (lead.parentName || lead.parentAge != null) ? (
+                            <span className="text-xs text-muted-foreground">
+                              Parent: {lead.parentName ?? "—"}
+                              {lead.parentAge != null ? ` (${lead.parentAge})` : ""}
+                            </span>
                           ) : null}
                         </div>
                       </TableCell>
+
+                      <TableCell className="py-3">
+                        <div className="flex flex-col items-start gap-1">
+                          {planName ? (
+                            <span className="text-sm">{planName}</span>
+                          ) : lead.interestedActivity ? (
+                            <span className="text-sm capitalize">{lead.interestedActivity}</span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
+                          {planName && lead.interestedActivity ? (
+                            <span className="text-xs capitalize text-muted-foreground">
+                              {lead.interestedActivity}
+                            </span>
+                          ) : null}
+                        </div>
+                      </TableCell>
+
                       <TableCell className="py-3">
                         <Badge variant="outline" className="text-[10px]">
                           {titleCase(lead.source)}
                         </Badge>
+                        {lead.walkInDate ? (
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {formatDate(lead.walkInDate)}
+                          </p>
+                        ) : null}
                       </TableCell>
+
                       <TableCell className="py-3">
                         <LeadStatusSelect leadId={lead.id} status={lead.status ?? "new"} />
                       </TableCell>
+
                       <TableCell className="py-3">
                         {role === "consultant" ? (
                           <span className="text-xs text-muted-foreground">
@@ -277,9 +323,11 @@ export default function LeadsPage() {
                           />
                         )}
                       </TableCell>
+
                       <TableCell className="py-3 text-xs text-muted-foreground">
                         {formatDate(lead.createdAt)}
                       </TableCell>
+
                       <TableCell className="py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <EditLeadDialog
