@@ -137,7 +137,6 @@ function LeadForm({
       <LeadSection title="Source" hint="Where did this lead come from?">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label className={fieldLabel}>Source</Label>
             <Select
               value={form.source}
               onValueChange={(value) =>

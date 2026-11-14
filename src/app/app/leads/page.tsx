@@ -263,12 +263,17 @@ export default function LeadsPage() {
                           >
                             {segment}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {lead.age != null ? `${lead.age} yrs` : "Age —"}
-                            {lead.gender
-                              ? ` · ${lead.gender === "not-specified" ? "n/s" : lead.gender}`
-                              : ""}
-                          </span>
+                          {lead.age != null || lead.gender ? (
+                            <span className="text-xs text-muted-foreground">
+                              {lead.age != null ? `${lead.age} yrs` : ""}
+                              {lead.age != null && lead.gender ? " · " : ""}
+                              {lead.gender
+                                ? lead.gender === "not-specified"
+                                  ? "gender n/s"
+                                  : lead.gender
+                                : ""}
+                            </span>
+                          ) : null}
                           {segment === "kid" && (lead.parentName || lead.parentAge != null) ? (
                             <span className="text-xs text-muted-foreground">
                               Parent: {lead.parentName ?? "—"}

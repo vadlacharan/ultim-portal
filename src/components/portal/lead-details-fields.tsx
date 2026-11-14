@@ -143,9 +143,6 @@ export function LeadDetailsFields({
       {tenantOptions.length > 0 ? (
         <LeadSection title="Facility" hint="Which facility is this lead for?">
           <div className="space-y-2">
-            <Label className={fieldLabel} htmlFor={`${idPrefix}-facility`}>
-              Facility <span className="text-primary">*</span>
-            </Label>
             <Select
               value={value.tenant || "none"}
               onValueChange={(next) => set({ tenant: next === "none" ? "" : next })}
