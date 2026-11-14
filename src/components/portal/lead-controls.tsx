@@ -36,6 +36,7 @@ import {
 import type { EnquiryDoc } from "@/lib/api";
 
 const detailsToInput = (details: LeadDetailsState) => ({
+  tenant: details.tenant ? Number(details.tenant) : null,
   age: details.age === "" ? null : Number(details.age),
   gender: (details.gender || null) as "male" | "female" | "other" | "not-specified" | null,
   segment: details.segment as "adult" | "parent" | "kid",

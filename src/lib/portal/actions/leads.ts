@@ -12,6 +12,8 @@ export type LeadActionResult = {
 export type LeadSegment = "adult" | "parent" | "kid";
 
 export type LeadDetailsInput = {
+  /** Facility the lead belongs to - required for admins (they pick it). */
+  tenant?: number | null;
   age?: number | null;
   gender?: "male" | "female" | "other" | "not-specified" | null;
   segment?: LeadSegment;
@@ -54,6 +56,9 @@ const normalizeLeadDetails = (input: LeadDetailsInput) => ({
   walkInDate: input.walkInDate || undefined,
 });
 
+const leadTenant = (input: LeadDetailsInput) =>
+  input.tenant ? { tenant: Number(input.tenant) } : {};
+
 export async function createLeadAction(input: CreateLeadInput): Promise<LeadActionResult> {
   const { token } = await requireApiAuth();
 
@@ -74,6 +79,7 @@ export async function createLeadAction(input: CreateLeadInput): Promise<LeadActi
         status: "new",
         notes: input.notes?.trim() || undefined,
         ...normalizeLeadDetails(input),
+        ...leadTenant(input),
       },
       token,
     );
@@ -107,6 +113,10 @@ export async function updateLeadAction(input: UpdateLeadInput): Promise<LeadActi
   if (input.notes !== undefined) data.notes = input.notes.trim() || null;
 
   Object.assign(data, normalizeLeadDetails(input));
+
+  if (input.tenant !== undefined) {
+    data.tenant = input.tenant ? Number(input.tenant) : null;
+  }
 
   try {
     await payload.update<EnquiryDoc>("enquiry", input.leadId, data, token);

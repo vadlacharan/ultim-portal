@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/select";
 import { LEAD_ACTIVITIES, LEAD_GENDERS, LEAD_SEGMENTS } from "@/lib/leads";
 import { usePortalQuery } from "@/hooks/use-portal-query";
-import { payload, type MembershipPlan } from "@/lib/api";
+import { payload, type MembershipPlan, type Tenant } from "@/lib/api";
 import { tenantScope } from "@/lib/scope";
 
 export type LeadDetailsState = {
+  /** Facility id - admins pick it, partners get their own automatically. */
+  tenant: string;
   age: string;
   gender: string;
   segment: string;
@@ -27,6 +29,7 @@ export type LeadDetailsState = {
 };
 
 export const emptyLeadDetails: LeadDetailsState = {
+  tenant: "",
   age: "",
   gender: "",
   segment: "adult",
@@ -47,6 +50,7 @@ export const leadDetailsToState = (lead: {
   interestedPlan?: number | null;
   walkInDate?: string | null;
 }): LeadDetailsState => ({
+  tenant: "",
   age: lead.age != null ? String(lead.age) : "",
   gender: lead.gender ?? "",
   segment: lead.segment ?? "adult",
@@ -106,7 +110,18 @@ export function LeadDetailsFields({
     return res.docs ?? [];
   }, []);
 
+  const { data: tenants } = usePortalQuery(async ({ user, token }) => {
+    if (user.role !== "admin") return [] as Tenant[];
+    const res = await payload.list<Tenant>(
+      "tenants",
+      { limit: 100, depth: 0, sort: "Facility" },
+      token,
+    );
+    return res.docs ?? [];
+  }, []);
+
   const planOptions = useMemo(() => plans ?? [], [plans]);
+  const tenantOptions = useMemo(() => tenants ?? [], [tenants]);
 
   const set = (patch: Partial<LeadDetailsState>) => onChange({ ...value, ...patch });
 
@@ -125,6 +140,33 @@ export function LeadDetailsFields({
 
   return (
     <div className="space-y-6">
+      {tenantOptions.length > 0 ? (
+        <LeadSection title="Facility" hint="Which facility is this lead for?">
+          <div className="space-y-2">
+            <Label className={fieldLabel} htmlFor={`${idPrefix}-facility`}>
+              Facility <span className="text-primary">*</span>
+            </Label>
+            <Select
+              value={value.tenant || "none"}
+              onValueChange={(next) => set({ tenant: next === "none" ? "" : next })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a facility" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Select a facility</SelectItem>
+                {tenantOptions.map((tenant) => (
+                  <SelectItem key={tenant.id} value={String(tenant.id)}>
+                    {tenant.Facility ?? `Facility #${tenant.id}`}
+                    {tenant.city ? ` — ${tenant.city}` : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </LeadSection>
+      ) : null}
+
       <LeadSection title="Profile" hint="Who is this lead?">
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-2">
