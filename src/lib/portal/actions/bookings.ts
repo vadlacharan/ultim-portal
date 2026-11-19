@@ -13,6 +13,7 @@ const REASON_MESSAGES: Record<string, string> = {
   "booking-expired": "This booking has expired.",
   "booking-completed": "This session is already completed.",
   "invalid-session-datetime": "The session time for this booking is invalid.",
+  "qr-expired": "This QR has expired. Ask the member to reopen the app — or try again.",
 };
 
 /**
@@ -37,13 +38,28 @@ export async function checkInOutAction(
   }
 
   try {
+    // The gate only accepts codes generated within the member app's refresh
+    // window (+5s). Rotate the pass first so a desk check-in is never rejected
+    // for an old code - this uses the same endpoint the member app uses.
+    let scanData = qrCode;
+    try {
+      const fresh = await apiFetch<{ token?: string }>("/api/bookings/" + bookingId + "/generate-qr", {
+        method: "POST",
+        body: {},
+        token,
+      });
+      if (fresh?.token) scanData = fresh.token;
+    } catch {
+      /* fall back to the stored code - verify will explain if it is stale */
+    }
+
     const result = await apiFetch<{
       allow?: boolean;
       reason?: string;
       message?: string;
     }>("/api/bookings/verify-qr", {
       method: "POST",
-      body: { scanData: qrCode },
+      body: { scanData },
       token,
     });
 
