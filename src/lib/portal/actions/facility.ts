@@ -1,6 +1,15 @@
 import { ApiError, payload, uploadMedia, type Media, type Tenant } from "@/lib/api";
 import { requireApiAuth } from "@/lib/scope";
 
+export type CourtScheduleInput = {
+  /** HH:MM */
+  startTime: string;
+  /** HH:MM */
+  endTime: string;
+  /** Court names available in this window. Empty/all = no restriction. */
+  courts: string[];
+};
+
 export type FacilityActivityInput = {
   activity: string;
   category: "fitness" | "sports" | "health" | "";
@@ -8,6 +17,7 @@ export type FacilityActivityInput = {
   active: boolean;
   capacityPerCourt: number;
   courts: string[];
+  courtSchedules: CourtScheduleInput[];
 };
 
 export type FacilityInput = {
@@ -83,6 +93,13 @@ export async function updateFacilityAction(
             .map((name) => name.trim())
             .filter(Boolean)
             .map((name) => ({ name })),
+          courtSchedules: (activity.courtSchedules ?? [])
+            .filter((schedule) => schedule.startTime && schedule.endTime)
+            .map((schedule) => ({
+              startTime: schedule.startTime,
+              endTime: schedule.endTime,
+              courts: (schedule.courts ?? []).map((name) => name.trim()).filter(Boolean),
+            })),
         })),
         facilityImages: input.imageIds.map((id) => ({ facilityImage: id })),
       },

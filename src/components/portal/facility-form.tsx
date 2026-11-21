@@ -18,6 +18,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { portalCall } from "@/lib/portal-client";
+import { CourtsEditor, supportsCourts } from "@/components/portal/courts-editor";
 import type {
   FacilityActivityInput,
   FacilityInput,
@@ -77,6 +78,7 @@ export function FacilityForm({
           active: true,
           capacityPerCourt: next === "badminton" ? 6 : 1,
           courts: [],
+          courtSchedules: [],
         },
       ],
     }));
@@ -326,21 +328,12 @@ export function FacilityForm({
                 </Button>
               </div>
 
-              <div className="space-y-2">
-                <Label>Courts / lanes</Label>
-                <Input
-                  value={activity.courts.join(", ")}
-                  placeholder="Court 1, Court 2, Court 3"
-                  onChange={(event) =>
-                    updateActivity(index, {
-                      courts: event.target.value.split(",").map((name) => name.trim()),
-                    })
-                  }
+              {supportsCourts(activity.activity) ? (
+                <CourtsEditor
+                  activity={activity}
+                  onChange={(patch) => updateActivity(index, patch)}
                 />
-                <p className="text-[11px] text-muted-foreground">
-                  Comma separated, in display order. Members pick one when booking.
-                </p>
-              </div>
+              ) : null}
             </div>
           ))}
         </CardContent>

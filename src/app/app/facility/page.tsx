@@ -92,6 +92,11 @@ export default function FacilityPage() {
     active: activity.active !== false,
     capacityPerCourt: Number(activity.capacityPerCourt ?? 1),
     courts: (activity.courts ?? []).map((court) => court.name).filter(Boolean),
+    courtSchedules: (activity.courtSchedules ?? []).map((schedule) => ({
+      startTime: schedule.startTime ?? "",
+      endTime: schedule.endTime ?? "",
+      courts: (schedule.courts ?? []).filter((name): name is string => Boolean(name)),
+    })),
   }));
 
   const photos = (tenant.facilityImages ?? [])

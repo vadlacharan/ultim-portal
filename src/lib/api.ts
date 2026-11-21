@@ -158,6 +158,14 @@ export type Tenant = {
         active?: boolean | null;
         courts?: { id?: string; name: string }[] | null;
         capacityPerCourt?: number | null;
+        courtSchedules?:
+          | {
+              id?: string;
+              startTime?: string | null;
+              endTime?: string | null;
+              courts?: (string | null)[] | null;
+            }[]
+          | null;
       }[]
     | null;
   createdAt?: string;
