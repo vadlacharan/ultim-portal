@@ -332,6 +332,9 @@ export function FacilityForm({
                 <CourtsEditor
                   activity={activity}
                   onChange={(patch) => updateActivity(index, patch)}
+                  onSave={save}
+                  saving={saving}
+                  dirty={dirty}
                 />
               ) : null}
             </div>
